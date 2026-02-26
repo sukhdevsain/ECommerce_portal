@@ -1,3 +1,8 @@
+@php
+    $user = auth()->user();
+    $billing = $user 
+        ? \App\Models\Billing::where('user_id', $user->id)->first() : null;
+@endphp
 <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
@@ -23,7 +28,7 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        John Doe
+                        {{ $billing->fullname }}
                     </div>
                 </nav>
             </div>

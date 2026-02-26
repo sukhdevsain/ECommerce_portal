@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="container-fluid bg-light p-5">
-    <h1 class="text-center text-secondary"><i class="fa-solid fa-layer-group"></i> Product Detail</h1>
+    <h1 class="text-center text-secondary"><i class="fa-solid fa-layer-group"></i> {{ $product->p_name }}</h1>
 </div>
 
 <section class="my-5">
@@ -15,15 +15,15 @@
             <div class="col-lg-4">
             
 
-                <img src="{{asset('assets/images/products/1.jpg')}}" class="rounded img-fluid">
+                <img src="{{asset('storage/'.$product->p_image)}}" class="rounded img-fluid">
                 
                 
             </div>
-
+            
             <div class="col-lg-8">
                 <div>
-                    <h2>Women Shoes</h2>
-                    <h5>₹ 499.00</h5>
+                    <h2>{{ $product->p_name }}</h2>
+                    <h5>₹ {{ $product->p_price }}.00</h5>
                     <div>
                         <div class="d-flex flex-row mb-3">
                             <div>
@@ -43,17 +43,17 @@
                         <div class="d-flex flex-row mb-3">
                             <div class="p-1"><h6>Quantity</h6></div>
                             <div class="p-1">
-                                <span class="btn btn-secondary btn-sm rounded-start-pill"><i class="fa-solid fa-minus"></i></span>
-                                <span class="mx-2">01</span>
-                                <span class="btn btn-secondary btn-sm rounded-end-pill"><i class="fa-solid fa-plus"></i></span>
+                                <span class="btn btn-secondary btn-sm rounded-start-pill dec_qty"><i class="fa-solid fa-minus"></i></span>
+                                <input class="mx-2 qty-val text-center border-0 bg-white" value="1" disabled style="width: 25px"></input>
+                                <span class="btn btn-secondary btn-sm rounded-end-pill inc_qty"><i class="fa-solid fa-plus"></i></span>
                             </div>
                             
                         </div>
                     </div>
-                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                    <p>{{ $product->p_description }}</p>
 
                     <div>
-                        <a class="btn theme-green-btn text-light rounded-pill me-1 px-3 py-2">Add to cart</a>
+                        <button class="btn theme-green-btn text-light rounded-pill me-1 px-3 py-2 add-to-cart">Add to cart</button>
                         <a class="btn theme-orange-btn text-light rounded-pill px-3 py-2">Buy Now</a>
                     </div>
                 </div>
@@ -61,8 +61,7 @@
             </div>
             <div class="my-4">
                 <h2>Product Description</h2>
-                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
-                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                <p>{{ $product->p_description }}</p>
             </div>
             <!-- Related Products -->
             <div class="mb-5">
@@ -225,6 +224,60 @@
             </section>
         </div>
     </div>
+
+    <script>
+       function increase_qty() {
+        var _qty = $(".qty-val").val();
+        _qty = parseInt(_qty) + 1;
+        $(".qty-val").val(_qty);
+    }
+
+    function decrease_qty() {
+        var _qty = $(".qty-val").val();
+        _qty = parseInt(_qty) - 1;
+
+        if (_qty > 0) {
+            $(".qty-val").val(_qty);
+        }
+    }
+
+    function add_to_cart() {
+        var qty = parseInt($(".qty-val").val(),'');
+        var name = "{{ $product->p_name }}";
+        var price = parseFloat("{{ $product->p_price }}");
+        var total = qty * price;
+        var image = "{{ asset('storage/'.$product->p_image) }}";
+
+        var cartData = {
+            'name': name,
+            'quantity': qty,
+            'product_price': price,
+            'total_price': total,
+            'image_url': image,
+        };
+
+        var cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        let exestingindex = cart.findIndex(item => item.name === name);
+        if(exestingindex > -1){
+            cart[exestingindex].quantity += qty;
+            cart[exestingindex].total_price = cart[exestingindex].quantity * price;;
+
+        }else{
+            cart.push(cartData);
+        }   
+        localStorage.setItem("cart", JSON.stringify(cart));
+        update_cart_count();
+        alert("Item added to cart!");
+    }
+
+    $(document).ready(function () {
+        $(document).on('click', '.inc_qty', increase_qty);
+        $(document).on('click', '.dec_qty', decrease_qty);
+        $(document).on('click', '.add-to-cart', add_to_cart);
+        update_cart_count();
+    });
+    </script>
 
 </section>
 

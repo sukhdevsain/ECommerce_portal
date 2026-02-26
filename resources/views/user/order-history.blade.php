@@ -3,6 +3,12 @@
 <title>Order History</title>
 @endpush
 
+@php
+    $user = auth()->user();
+    $billing = $user  ? \App\Models\Billing::where('user_id', $user->id)->first() : null;
+    $orders = $user  ? \App\Models\Order::where('user_id', $user->id)->get() : null;
+@endphp
+
 @section('content')
         
             <div id="layoutSidenav_content">
@@ -27,117 +33,26 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (5 Products)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-warning">Processing</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
+                                               @foreach($orders as $order)
+                                                    <tr>
+                                                        <th scope="row">{{ $order->order_no }}</th>
+                                                        <td>{{ $order->created_at->format('d-m-y') }}</td>
+                                                        <td>{{ $order->total }}</td>
+                                                        <td>
+                                                        @php
+                                                            $statusClass = match($order->status){
+                                                                'pending' => 'text-bg-secondary',
+                                                                'processing' => 'text-bg-warning',
+                                                                'on the way' => 'text-bg-info',
+                                                                'delivered' => 'text-bg-success',
+                                                            }
+                                                        @endphp
+                                                        <span class="badge rounded-pill {{ $statusClass }}">{{ $order->status }}</span>
+                                                        <a href="{{url('user/detail/'. $order->order_id)}}" class="text-decoration-none mx-2">View Details</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
 
-                                                <tr>
-                                                <th scope="row">002</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (2 Products)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-info">On the Way</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">003</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00  (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">004</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00  (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">005</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00  (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">006</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00  (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">006</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">006</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">006</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">006</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">006</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00 (1 Product)</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('user/detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                
                                             </tbody>
                                         </table>
                                     </div>

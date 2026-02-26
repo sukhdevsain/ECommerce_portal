@@ -14,7 +14,7 @@ class HomeController extends Controller
       $products = Product::limit(4)->get();
       $popular = Product::latest()->limit(4)->get();
       $recent = Product::latest()->limit(4)->get();
-      $electronics = Product::where('c_id', 1)->limit(4)->get();
+      $electronics = Category::where('p_c_id', 17)->limit(4)->get();
        return view('home', compact('banners', 'products', 'popular', 'recent', 'electronics'));
    }
 

@@ -67,14 +67,18 @@
             
             </div>
         <div class="row theme-product">
-            @foreach($electronics as $electronic)
+            @foreach($electronics as $subcategory)
+            @php
+            $product = $subcategory->products->first();
+            @endphp
+
             <div class="col-lg-3">
                 <div class="card">
                 
-                <a href="#"><img src="{{asset('storage/'.$electronic->p_image)}}" class="card-img-top" alt="..."></a>
+                <a href="#"><img src="{{asset('storage/'.$product->p_image)}}" class="card-img-top" alt="..."></a>
                 <div class="card-body">
-                    <h6 class="card-title text-center "><a href="#" class="text-dark text-decoration-none">{{ $electronic->p_name }}</a></h6>
-                    <h5 class="card-title text-center">₹ {{ $electronic->p_price }}.00</h5>
+                    <h6 class="card-title text-center "><a href="#" class="text-dark text-decoration-none">{{ $product->p_name }}</a></h6>
+                    <h5 class="card-title text-center">₹ {{ $product->p_price }}.00</h5>
                     
                 </div>  
                 </div>

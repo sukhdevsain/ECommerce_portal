@@ -2,14 +2,18 @@
 @push('title')
 <title>Dashboard - User</title>
 @endpush
-
+@php
+    $user = auth()->user();
+    $billing = $user  ? \App\Models\Billing::where('user_id', $user->id)->first() : null;
+    $orders = $user  ? \App\Models\Order::where('user_id', $user->id)->get() : null;
+@endphp
 @section('content')
         
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
                         <h1 class="my-4">Dashboard</h1>
-                        
+
                         <div class="row">
                             <div class="col-xl-6 col-md-6">
                                 <div class="card bg-info text-white mb-4">
@@ -17,17 +21,17 @@
                                         <img src="{{asset('dashboard/assets/img/user.png')}}" style="width:155px;">
                                     </div>
                                     <div class="my-3">
-                                        <h5 class="text-center text-dark">John Doe</h5>
+                                        <h5 class="text-center text-dark">{{ $billing->fullname }}</h5>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-md-6 " >
                                 <div class="card bg-info text-white mb-4" style="height:250px">
-                                    <div class="card-body mx-auto my-4">
+                                    <div class="card-body my-4">
                                         <h5 class="text-dark">Billing Address</h5>
-                                        <h6 class="text-dark">Reference site about Lorem Ipsum, giving information on its origins </h6>
-                                        <span class="text-dark"><strong>Email:</strong> john@gmail.com</span><br>
-                                        <span class="text-dark"><strong>Phone:</strong> +91 1236547890</span><br>
+                                        <h6 class="text-dark">{{ $billing->address }}</h6>
+                                        <span class="text-dark"><strong>Email:</strong>{{ $billing->email }}</span><br>
+                                        <span class="text-dark"><strong>Phone:</strong> {{ $user->phone }}</span><br>
                                     </div>
                                    
                                 </div>
@@ -46,44 +50,33 @@
                                 <div class="mt-3">
                                     <table id="datatablesSimple">
                                             <thead>
-                                                <tr>
+                                            <tr>
                                                 <th scope="col">Order Id</th>
                                                 <th scope="col">Date</th>
                                                 <th scope="col">Total</th>
                                                 <th scope="col">Status</th>
-                                                </tr>
+                                            </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-warning">Processing</span>
-                                                <a href="{{url('detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">002</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-info">On the Way</span>
-                                                <a href="{{url('detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">003</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-                                                
+                                                @foreach($orders as $order)
+                                                    <tr>
+                                                        <th scope="row">{{ $order->order_no }}</th>
+                                                        <td>{{ $order->created_at->format('d-m-y') }}</td>
+                                                        <td>{{ $order->total }}</td>
+                                                        <td>
+                                                        @php
+                                                            $statusClass = match($order->status){
+                                                                'pending' => 'text-bg-secondary',
+                                                                'processing' => 'text-bg-warning',
+                                                                'on the way' => 'text-bg-info',
+                                                                'delivered' => 'text-bg-success',
+                                                            }
+                                                        @endphp
+                                                        <span class="badge rounded-pill {{ $statusClass }}">{{ $order->status }}</span>
+                                                        <a href="{{url('user/detail/'. $order->order_id)}}" class="text-decoration-none mx-2">View Details</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

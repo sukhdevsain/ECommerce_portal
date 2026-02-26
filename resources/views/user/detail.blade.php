@@ -9,25 +9,24 @@
                 <main>
                     <div class="container-fluid px-5">
                         <div class="row my-5">
-                            <h6>Order Details: Dec 25, 2024. (3 Products)</h6>
+                            <h6>Order Details: {{ $order->created_at->format('d-m-y') }}</h6>
+                            
                             <div class="col-xl-6 col-md-6 mt-3 border border-primary p-3">
                                 
                                     <h5 class="text-dark">Billing Address</h5>
-                                    <h6 class="text-dark">Reference site about Lorem Ipsum, giving information on its origins </h6>
-                                    <span class="text-dark"><strong>Email:</strong> john@gmail.com</span><br>
-                                    <span class="text-dark"><strong>Phone:</strong> +91 1236547890</span>
+                                    <h6 class="text-dark">{{ $billing->address }}</h6>
+                                    <span class="text-dark"><strong>Email:</strong> {{ $billing->email }}</span><br>
+                                    <span class="text-dark"><strong>Phone:</strong> {{ $user->phone }}</span>
                                
                             </div>
 
                             <div class="col-xl-6 col-md-6 mt-3 border border-primary p-3">
                                
                                     <h5 class="text-dark">Order Summary</h5>
-                                    <span class="text-dark"><strong>Order id:</strong> 001</span><br>
-                                    <span class="text-dark"><strong>Payment Method:</strong> Cash on Delivery</span><br>
-                                    <span class="text-dark"><strong>Subtotal:</strong> ₹ 1499.00</span><br>
-                                    <span class="text-dark"><strong>Discount:</strong> 20%</span><br>
+                                    <span class="text-dark"><strong>Order id:</strong> {{ $order->order_no }}</span><br>
+                                    <span class="text-dark"><strong>Payment Method:</strong> {{ $order->payment_mode }}</span><br>
                                     <span class="text-dark"><strong>Shipping Fee:</strong> Free</span>
-                                    <h5 class="text-dark mt-3">Total: ₹ 1499.00</h5>
+                                    <h5 class="text-dark mt-3">Total: ₹ {{ $order->total }}</h5>
                                 
                             </div>
                         </div>
@@ -69,51 +68,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                @foreach($order->items as $order)
                                     <tr >
                                     <th>
                                         <div class="d-flex">
                                             <div>
-                                                <img src="{{asset('assets/images/products/5.jpg')}}" style="width:70px;" class="rounded-3">
+                                                <img src="{{asset($order->image)}}" style="width:70px;" class="rounded-3">
                                             </div>
-                                            <div class="p-3"><h5>Camera</h5></div>
+                                            <div class="p-3"><h5>{{ $order->name }}</h5></div>
                                         </div>
                                     </th>
-                                    <td >₹ 599.00</td>
-                                    <td>01</td>
-                                    <td>₹ 599.00</td>
+                                    <td >₹ {{ $order->price }}</td>
+                                    <td>{{ $order->qty }}</td>
+                                    <td>₹ {{ $order->total }}</td>
                                 
-                                    </tr>
-
-                                    <tr>
-                                    <th>
-                                        <div class="d-flex">
-                                            <div>
-                                                <img src="{{asset('assets/images/products/9.jpg')}}" style="width:70px;" class="rounded-3">
-                                            </div>
-                                            <div class="p-3"><h5>Handbag</h5></div>
-                                        </div>
-                                    </th>
-                                    <td>₹ 599.00</td>
-                                    <td>02</td>
-                                    <td>₹ 599.00</td>
-                    
-                                    </tr>
-
-                                    <tr>
-                                    <th>
-                                        <div class="d-flex">
-                                            <div>
-                                                <img src="{{asset('assets/images/products/2.jpg')}}" style="width:70px;" class="rounded-3">
-                                            </div>
-                                            <div class="p-3"><h5>Watch</h5></div>
-                                        </div>
-                                    </th>
-                                    <td>₹ 799.00</td>
-                                    <td>03</td>
-                                    <td>₹ 799.00</td>
-                                    
-                                    </tr>
-                                    
+                                    </tr>  
+                                @endforeach
                                 </tbody>
                                 </table>
                                 
