@@ -27,80 +27,35 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @foreach($orders as $order)
                                                 <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>
+                                                   <th scope="row">{{ $order->order_no }}</th>
+                                                    <td>{{ $order->billing->fullname ?? 'N/A' }}</td>
+                                                    <td>₹ {{ $order->total }}</td>
+                                                    <td>
+                                                      @php
+                                                        $statusClass = match($order->status){
+                                                            'pending'    => 'text-bg-secondary',
+                                                            'processing' => 'text-bg-warning',
+                                                            'ontheway'   => 'text-bg-info',
+                                                            'delivered'  => 'text-bg-success',
+                                                            default      => 'text-bg-secondary',
+                                                        };
+                                                    @endphp
+                                                    <span class="badge rounded-pill {{ $statusClass }}">{{ $order->status }}</span>
 
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
+                                                    </td>
+                                                    <td>
+                                                        @if($order->status != 'delivered')
+                                                        <a href="{{ route('order.processing', $order->order_id) }}" class="btn btn-secondary btn-sm" title="Processing"><i class="fa-solid fa-rotate"></i></a>
+                                                        <a href="{{ route('order.ontheway', $order->order_id) }}" class="btn btn-primary btn-sm" title="On the way"><i class="fa-solid fa-truck"></i></a>
+                                                        @endif
+                                                        <a href="{{ route('order.delivered', $order->order_id) }}" class="btn btn-success btn-sm" title="Delivered"><i class="fa-solid fa-check"></i></a>
+                                                        <a href="{{ url('vendor/order-detail/' . $order->order_id) }}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
+                                                    </td>
                                                 </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>   
+                                                @endforeach
+                  
                                             </tbody>
                                         </table>
                                     </div>

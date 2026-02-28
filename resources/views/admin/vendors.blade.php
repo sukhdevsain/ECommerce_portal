@@ -3,6 +3,9 @@
 <title>Vendors</title>
 @endpush
 
+@php
+    $vendors = App\Models\Vendor::all();
+@endphp
 @section('content')
         
             <div id="layoutSidenav_content">
@@ -30,59 +33,31 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                               
-                                                <td>1</td>
-                                                <td>John Doe</td>
-                                                <td>+91 7896541230</td>
-                                                <td>john@gmail.com</td>
-                                                <td>Reference site about Lorem Ipsum, giving information on its</td>
-                                                <td>
-                                                <span class="badge text-bg-success">Active</span>
-                                                </td>
-                                                <td>
-                                                    
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="#" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></a>
-                                                </td>
-                                                </tr>
+                                                @foreach($vendors as $vendor)
 
                                                 <tr>
-                                               
-                                                <td>2</td>
-                                                <td>John Doe</td>
-                                                <td>+91 7896541230</td>
-                                                <td>john@gmail.com</td>
-                                                <td>Reference site about Lorem Ipsum, giving information on its</td>
-                                                <td>
-                                                <span class="badge text-bg-success">Active</span>
-                                                </td>
-                                                <td>
+                                                
+                                                    <td>{{ $vendor->v_id }}</td>
+                                                    <td>{{ $vendor->fullname }}</td>
+                                                    <td>+91 {{ $vendor->phone }}</td>
+                                                    <td>{{ $vendor->email }}</td>
+                                                    <td>{{ $vendor->address }}</td>
+                                                    <td>
+                                                        @php
+                                                            $statusClass = match($vendor->status){
+                                                                'unverified' => 'text-bg-danger',
+                                                                'verified' => 'text-bg-success',
+                                                            }
+                                                        @endphp
+                                                    <span class="badge {{ $statusClass }}">{{ $vendor->status }}</span>
+                                                    </td>
+                                                    <td>
                                                     
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="#" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></a>
+                                                    <a href="{{ route('vendor.verified', $vendor->v_id) }}" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
+                                                    <a href="{{ route('vendor.unverified', $vendor->v_id) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></a>
                                                 </td>
                                                 </tr>
-
-                                                <tr>
-                                               
-                                                <td>3</td>
-                                                <td>John Doe</td>
-                                                <td>+91 7896541230</td>
-                                                <td>john@gmail.com</td>
-                                                <td>Reference site about Lorem Ipsum, giving information on its</td>
-                                                <td>
-                                                <span class="badge text-bg-danger">Inactive</span>
-                                                </td>
-                                                <td>
-                                                    
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                                    <a href="#" class="btn btn-danger btn-sm"><i class="fa-solid fa-xmark"></i></a>
-                                                </td>
-                                                </tr>
-
-
-
+                                                @endforeach
                                                
                                             </tbody>
                                         </table>

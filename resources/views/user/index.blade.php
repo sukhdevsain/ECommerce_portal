@@ -66,10 +66,12 @@
                                                         <td>
                                                         @php
                                                             $statusClass = match($order->status){
-                                                                'pending' => 'text-bg-secondary',
-                                                                'processing' => 'text-bg-warning',
-                                                                'on the way' => 'text-bg-info',
-                                                                'delivered' => 'text-bg-success',
+                                                            'pending' => 'text-bg-secondary',
+                                                            'processing' => 'text-bg-warning',
+                                                            'on the way' => 'text-bg-info',
+                                                            'delivered' => 'text-bg-success',
+                                                            'paid' => 'text-bg-primary',       
+                                                            default => 'text-bg-secondary',    
                                                             }
                                                         @endphp
                                                         <span class="badge rounded-pill {{ $statusClass }}">{{ $order->status }}</span>

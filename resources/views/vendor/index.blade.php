@@ -17,7 +17,7 @@
                                         <h5 class="text-dark">Total Orders</h5>
                                     </div>
                                     <div class="mb-4">
-                                        <h2 class="text-center text-dark">15</h2>
+                                        <h2 class="text-center text-dark">{{ $totalOrders }}</h2>
                                         
                                     </div>
                                 </div>
@@ -29,7 +29,7 @@
                                         <h5 class="text-dark">Total Sale</h5>
                                     </div>
                                     <div class="mb-4">
-                                        <h2 class="text-center text-dark">₹ 14,499.00</h2>
+                                        <h2 class="text-center text-dark">₹ {{ number_format($totalSale,2) }}</h2>
                                     </div>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                         <h5 class="text-dark">Pending Orders</h5>
                                     </div>
                                     <div class="mb-4">
-                                        <h2 class="text-center text-dark">5</h2>
+                                        <h2 class="text-center text-dark">{{ $pendingOrders }}</h2>
                                     </div>
                                 </div>
                             </div>
@@ -67,36 +67,25 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @foreach($orders as $order)
                                                 <tr>
-                                                <th scope="row">001</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-warning">Processing</span>
-                                                <a href="{{url('vendor/order-detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
+                                                    <th scope="row">{{ $order->order_no }}</th>
+                                                    <td>{{ $order->created_at }}</td>
+                                                    <td>₹ {{ $order->total }}</td>
+                                                    <td>
+                                                    @php
+                                                        $statusClass = match($order->status){
+                                                            'pending' => 'text-bg-secondary',
+                                                            'processing' => 'text-bg-warning',
+                                                            'on the way' => 'text-bg-info',
+                                                            'delivered' => 'text-bg-success',
+                                                        }
+                                                    @endphp
+                                                    <span class="badge rounded-pill {{ $statusClass }}">{{ $order->status }}</span>
+                                                    <a href="{{ url('vendor/order-detail/' . $order->order_id) }}" class="text-decoration-none mx-2">View Details</a>
+                                                    </td>
                                                 </tr>
-
-                                                <tr>
-                                                <th scope="row">002</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-info">On the Way</span>
-                                                <a href="{{url('vendor/order-detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">003</th>
-                                                <td>25-12-2024</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>
-                                                <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                <a href="{{url('vendor/order-detail')}}" class="text-decoration-none mx-2">View Details</a>
-                                                </td>
-                                                </tr>
-                                                
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

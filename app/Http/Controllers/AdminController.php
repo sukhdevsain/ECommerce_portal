@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Order;
 
 class AdminController extends Controller
 {
@@ -39,13 +40,13 @@ class AdminController extends Controller
         return view('admin/orders');
     }
 
-    public function orderdetail(){
-        return view('admin/order-detail');
+    public function orderdetail($id){
+        $order = Order::with('billing', 'items', 'user')->findOrFail($id);
+        return view('admin.order-detail', compact('order'));
     }
-
-    
 
     // public function products(){
     //     return view('admin/products');
     // }
+    
 }

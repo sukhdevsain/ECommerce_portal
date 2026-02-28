@@ -145,15 +145,10 @@ class UserController extends Controller
 
   public function checkPhone(Request $request)
     {
-        $request->validate([
-            'phone' => 'required'
-        ]);
-
+        $request->validate(['phone' => 'required']);
         $exists = User::where('phone', $request->phone)->exists();
 
-        return response()->json([
-            'exists' => $exists
-        ]);
+        return response()->json(['exists' => $exists]);
     }
 
     function AuthenticationVerifyOtp(Request $request){

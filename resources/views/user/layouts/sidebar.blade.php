@@ -28,7 +28,7 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        {{ $billing->fullname }}
+                        {{ $billing?->fullname ?? 'Guest' }}
                     </div>
                 </nav>
             </div>

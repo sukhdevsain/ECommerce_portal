@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vendor;
+use App\Models\Order;
 
 class VendorController extends Controller
 {
@@ -71,15 +72,53 @@ class VendorController extends Controller
     }
 
     public function index(){
-        return view('vendor/index');
+        $vendorId = session('vendorId');
+
+        $orderIds = \App\Models\OrderItem::pluck('order_id')->unique();
+
+        $orders = Order::whereIn('order_id', $orderIds)
+                    ->with(['orderItems', 'billing'])
+                    ->latest()
+                    ->get();
+
+        $allOrders = Order::whereIn('order_id', $orderIds)->get();  
+
+        $totalOrders = $allOrders->count();
+        $totalSale = $allOrders->sum('total');
+        $pendingOrders = $allOrders->where('status', 'pending')->count();  
+
+        return view('vendor.index', compact('orders', 'totalOrders', 'totalSale', 'pendingOrders'));
     }
 
     public function orders(){
         return view('vendor/orders');
     }
 
-    public function orderdetail(){
-        return view('vendor/order-detail');
+    public function orderdetail($id){
+        $vendorId = session('vendorId');
+        
+        $order = Order::with(['billing', 'orderItems', 'user'])->findOrFail($id);
+        
+        $orderItems = $order->orderItems;
+        
+        return view('vendor/order-detail', compact('order', 'orderItems'));
+    }
+
+    public function updateStatus(Request $request, $order_id){
+        $order = Order::findOrFail($order_id);
+        
+        $routeName = $request->route()->getName();
+        
+        $status = match($routeName) {
+            'order.processing' => 'processing',
+            'order.ontheway'   => 'ontheway',
+            'order.delivered'  => 'delivered',
+        };
+        
+        $order->status = $status;
+        $order->save();
+        
+        return redirect()->back()->with('success', 'Order status updated!');
     }
 
     public function users(){
@@ -134,4 +173,21 @@ class VendorController extends Controller
 
         return redirect('vendor/profile')->with('success','Profile updated successfully!');
     }
+
+    public function verified($id){
+        $vendor = Vendor::findOrFail($id);
+        $vendor->status = 'verified';
+        $vendor->save();
+
+        return redirect()->back()->with('success', 'Vendor Verified Successfully');
+    }
+
+    public function unverified($id){
+        $vendor = Vendor::findOrFail($id);
+        $vendor->status = 'unverified';
+        $vendor->save();
+
+        return redirect()->back()->with('success', 'Vendor Unverified Successfully');
+    }
+
 }

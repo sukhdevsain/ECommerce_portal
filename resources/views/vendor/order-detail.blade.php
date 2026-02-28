@@ -9,27 +9,35 @@
                 <main>
                     <div class="container-fluid px-5">
                         <div class="row my-5">
-                            <h6>Order Details: Dec 25, 2024. (3 Products)</h6>
+                            <h6>Order Details: {{ $order->created_at }}</h6>
                             <div class="col-xl-6 col-md-6 mt-3 border border-primary p-3">
                                 
                                     <h5 class="text-dark">Customer Information</h5>
                                     <!-- <h6 class="text-dark">Reference site about Lorem Ipsum, giving information on its origins </h6> -->
-                                    <span class="text-dark"><strong>Name:</strong> John Doe</span><br>
-                                    <span class="text-dark"><strong>Email:</strong> john@gmail.com</span><br>
-                                    <span class="text-dark"><strong>Phone:</strong> +91 1236547890</span><br>
-                                    <span class="text-dark"><strong>Shipping Address:</strong> Reference site about Lorem Ipsum, giving information on its origins</span>
+                                    <span class="text-dark"><strong>Name:</strong> {{ $order->billing->fullname }}</span><br>
+                                    <span class="text-dark"><strong>Email:</strong> {{ $order->billing->email }}</span><br>
+                                    <span class="text-dark"><strong>Phone:</strong> +91 {{ $order->user->phone ?? 'N/A' }}</span><br>
+                                    <span class="text-dark"><strong>Shipping Address:</strong> {{ $order->billing->address }}</span>
                                
                             </div>
 
                             <div class="col-xl-6 col-md-6 mt-3 border border-primary p-3">
                                
                                     <h5 class="text-dark">Order Summary</h5>
-                                    <span class="text-dark"><strong>Order id:</strong> 001</span><br>
-                                    <span class="text-dark"><strong>Payment Method:</strong> Cash on Delivery</span><br>
-                                    <span class="text-dark"><strong>Payment Status:</strong> <span class="badge text-bg-success">Completed</span></span><br>
-                                    <span class="text-dark"><strong>Subtotal:</strong> ₹ 1499.00</span><br>
+                                    <span class="text-dark"><strong>Order id:</strong> {{ $order->order_no}}</span><br>
+                                    <span class="text-dark"><strong>Payment Method:</strong> {{ $order->payment_mode}}</span><br>
+                                    <span class="text-dark"><strong>Payment Status:</strong> 
+                                    @php
+                                        $statusClass = match($order->status){
+                                            'pending' => 'text-bg-secondary',
+                                            'processing' => 'text-bg-warning',
+                                            'on the way' => 'text-bg-info',
+                                            'delivered' => 'text-bg-success',
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $statusClass }}">{{ $order->status}}</span></span><br>
                                     
-                                    <h5 class="text-dark mt-3">Total: ₹ 1499.00</h5>
+                                    <h5 class="text-dark mt-3">Total: ₹ {{ $order->total}}</h5>
                                 
                             </div>
                         </div>
@@ -66,76 +74,24 @@
                                     <th scope="col"><h5>Product</h5></th>
                                     <th scope="col"><h5>Price</h5></th>
                                     <th scope="col"><h5>Quantity</h5></th>
-                                    <th scope="col"><h5>Subtotal</h5></th>
-                                    <th scope="col"><h5>Status</h5></th>
-                                    <th scope="col"><h5>Action</h5></th>
-                                    
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($orderItems as $item)
                                     <tr >
                                     <th>
                                         <div class="d-flex">
                                             <div>
-                                                <img src="{{asset('assets/images/products/5.jpg')}}" style="width:70px;" class="rounded-3">
+                                                <img src="{{asset($item->image)}}" style="width:70px;" class="rounded-3">
                                             </div>
-                                            <div class="p-3"><h5>Camera</h5></div>
+                                            <div class="p-3"><h5>{{ $item->name }}</h5></div>
                                         </div>
                                     </th>
-                                    <td >₹ 599.00</td>
-                                    <td>01</td>
-                                    <td>₹ 599.00</td>
-                                    <td><span class="badge text-bg-success">Deliverd</span></td>
-                                    <td>
-                                        <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                        <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                        <a href="#" class="btn btn-danger btn-sm"><i class="fa-solid fa-ban"></i></a>
-                                    </td>
+                                    <td >₹ {{ $item->price }}</td>
+                                    <td>{{ $item->qty }}</td>
                                 
                                     </tr>
-
-                                    <tr>
-                                    <th>
-                                        <div class="d-flex">
-                                            <div>
-                                                <img src="{{asset('assets/images/products/9.jpg')}}" style="width:70px;" class="rounded-3">
-                                            </div>
-                                            <div class="p-3"><h5>Handbag</h5></div>
-                                        </div>
-                                    </th>
-                                    <td>₹ 599.00</td>
-                                    <td>02</td>
-                                    <td>₹ 599.00</td>
-                                    <td><span class="badge text-bg-warning">Shipped</span></td>
-                                    <td>
-                                        <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                        <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                        <a href="#" class="btn btn-danger btn-sm"><i class="fa-solid fa-ban"></i></a>
-                                    </td>
-                    
-                                    </tr>
-
-                                    <tr>
-                                    <th>
-                                        <div class="d-flex">
-                                            <div>
-                                                <img src="{{asset('assets/images/products/2.jpg')}}" style="width:70px;" class="rounded-3">
-                                            </div>
-                                            <div class="p-3"><h5>Watch</h5></div>
-                                        </div>
-                                    </th>
-                                    <td>₹ 799.00</td>
-                                    <td>03</td>
-                                    <td>₹ 799.00</td>
-                                    <td><span class="badge text-bg-danger">Cancle</span></td>
-                                    <td>
-                                        <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                        <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a>
-                                        <a href="#" class="btn btn-danger btn-sm"><i class="fa-solid fa-ban"></i></a>
-                                    </td>
-                                    
-                                    </tr>
-                                    
+                                    @endforeach
                                 </tbody>
                                 </table>
                                 

@@ -3,6 +3,10 @@
 <title>Orders</title>
 @endpush
 
+@php
+    $orders = App\Models\Order::with('billing', 'items.product.category')->get();
+@endphp
+
 @section('content')
         
             <div id="layoutSidenav_content">
@@ -27,86 +31,41 @@
                                                 <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                           <tbody>
+                                                @foreach($orders as $order)
                                                 <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>₹ 149.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <!-- <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a> -->
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
+                                                    <td>{{ $order->order_no }}</td>
+                                                    <td>{{ $order->billing?->fullname ?? 'N/A' }}</td>
+                                                    <td>₹ {{ $order->total }}</td>
+                                                    <td>
+                                                        @php $commissionTotal = 0; @endphp
+                                                        @foreach ($order->items as $item)
+                                                            @php
+                                                                $commissionPercent = $item->product->category->c_commission ?? 0;
+                                                                $commissionTotal += ($item->total * $commissionPercent) / 100;
+                                                            @endphp
+                                                        @endforeach
+                                                        {{ number_format($commissionTotal, 2) }}
+                                                    </td>
+                                                    @php
+                                                        $statusClass = match($order->status){
+                                                            'pending' => 'text-bg-secondary',
+                                                            'processing' => 'text-bg-warning',
+                                                            'on the way' => 'text-bg-info',
+                                                            'delivered' => 'text-bg-success',
+                                                            default => 'text-bg-light',
+                                                        };
+                                                    @endphp
+                                                    <td>
+                                                        <span class="badge rounded-pill {{ $statusClass }}">{{ $order->status }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ url('admin/order-detail/' . $order->order_id) }}" class="btn btn-warning btn-sm">
+                                                            <i class="fa-regular fa-eye"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>₹ 149.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-success">Delevered</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <!-- <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a> -->
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>₹ 149.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-info">On the way</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <!-- <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a> -->
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>₹ 149.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <!-- <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a> -->
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>
-
-                                                <tr>
-                                                <th scope="row">001</th>
-                                                <td>John Doe</td>
-                                                <td>₹ 1499.00</td>
-                                                <td>₹ 149.00</td>
-                                                <td>
-                                                    <span class="badge rounded-pill text-bg-warning">Pending</span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    <!-- <a href="#" class="btn btn-primary btn-sm"><i class="fa-solid fa-truck"></i></a>
-                                                    <a href="#" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></a> -->
-                                                    <a href="{{('order-detail')}}" class="btn btn-warning btn-sm"><i class="fa-regular fa-eye"></i></a>
-                                                </td>
-                                                </tr>   
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>

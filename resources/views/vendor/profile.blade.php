@@ -26,7 +26,7 @@
 
                                                         <div class="col-lg-12 mb-3">
                                                             <label class="form-label">Identification Number</label>
-                                                            <input type="text" name="id_number" class="form-control" placeholder="PAN/Aadhar no." value="{{$vendor->id_number}}">
+                                                            <input type="text" name="id_number" class="form-control" placeholder="PAN/Aadhar no." value="{{ $vendor->id_number }}">
                                                             @error('id_number')
                                                                 <small class="text-danger">{{ $message }}</small>
                                                             @enderror

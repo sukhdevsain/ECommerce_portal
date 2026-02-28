@@ -18,9 +18,14 @@ class Product extends Model
     'p_image'
 ];
 
-    public function category(){
-        return $this->belongsTo(Category::class, 'c_id');
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'c_id'); 
     }
 
     protected $primaryKey = 'p_id';
+
+      public function vendor(){
+        return $this->belongs(vendor::class);
+    }
 }

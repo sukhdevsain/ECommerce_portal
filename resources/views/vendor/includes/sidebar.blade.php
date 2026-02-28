@@ -25,10 +25,10 @@
                                 <div class="sb-nav-link-icon"><i class="fa-regular fa-clock"></i></div>
                                 Orders
                             </a>
-                            <a class="nav-link" href="{{url('vendor/users')}}">
+                            <!-- <a class="nav-link" href="{{url('vendor/users')}}">
                                 <div class="sb-nav-link-icon"><i class="fa-regular fa-user"></i></i></div>
                                 Users
-                            </a>
+                            </a> -->
                             <a class="nav-link" href="{{url('vendor/profile')}}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-address-card"></i></div>
                                 Profile

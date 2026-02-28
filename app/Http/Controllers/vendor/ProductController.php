@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth; 
 
 class ProductController extends Controller
 {
@@ -17,24 +18,23 @@ class ProductController extends Controller
 
     public function createproduct(Request $request){
         $request->validate([
-            'p_name' => 'required',
-            'p_price' => 'required',
-            'c_id' => 'required',
-            'p_stock' => 'required',
+            'p_name'        => 'required',
+            'p_price'       => 'required',
+            'c_id'          => 'required',
+            'p_stock'       => 'required',
             'p_description' => 'required',
-            'p_image' => 'required',
+            'p_image'       => 'required',
         ]);
 
         Product::create([
-            'v_id' => 'vendorId',
-            'p_name' => $request->p_name,
-            'p_price' => $request->p_price,
-            'c_id' => $request->c_id,
-            'p_stock' => $request->p_stock,
+            'v_id'          => session('vendorId'),  
+            'p_name'        => $request->p_name,
+            'p_price'       => $request->p_price,
+            'c_id'          => $request->c_id,
+            'p_stock'       => $request->p_stock,
             'p_description' => $request->p_description,
-            'p_image' => $request->file('p_image')->store('products', 'public'),
+            'p_image'       => $request->file('p_image')->store('products', 'public'),
         ]);
-
 
         return redirect('vendor/add-product')->with('success', 'Product added successfully!');
     }

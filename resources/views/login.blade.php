@@ -21,17 +21,24 @@
                     </div>
 
                     <div class="col-lg-6">
-                        <div>
-                            <form>
-                                <div class="mb-3">
-                                <div  class="form-text mb-2">Please enter your mobile number</div>
-                                    <input type="tel" class="form-control form-control-lg" placeholder="+91">
-                                </div>
-                               
-                                <a href="{{url('login1')}}" type="btn" class="btn theme-orange-btn text-light form-control form-control-lg">Request OTP</a>
-                                <div class="text-center p-5 my-5">Don't have an account? <a href="{{url('register')}}" class="text-decoration-none">Signup</a></div>
-                            </form>
-                        </div>
+                        <form id="loginForm">
+                            <div id="loginError" class="text-danger mb-2"></div>
+                            
+                            <div class="mb-3">
+                                <div class="form-text mb-2">Please enter your mobile number</div>
+                                <input type="tel" name="phone" maxlength="10" id="phone" class="form-control form-control-lg" placeholder="+91" required>
+                            </div>
+
+                            <div class="mb-3 otp-section d-none">
+                                <div class="form-text mb-2">Please enter your OTP</div>
+                                <input type="text" id="otp" name="otp" maxlength="4" class="form-control form-control-lg" placeholder="******">
+                            </div>
+
+                            <button type="submit" class="btn theme-orange-btn text-light form-control form-control-lg"> Login </button>
+
+                            <div class="text-center p-5 my-5">Don't have an account? <a href="{{url('register')}}" class="text-decoration-none">Signup</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -39,4 +46,60 @@
     </div>
 </section>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    const form = document.getElementById('loginForm');
+    const phoneInput = document.getElementById('phone');
+    const otpInput = document.getElementById('otp');
+    const otpSection = document.querySelector('.otp-section');
+    const errorDiv = document.getElementById('loginError'); 
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault(); 
+
+        const phone = phoneInput.value;
+
+        if(!otpSection.classList.contains('d-none')){
+            const otp = otpInput.value;
+            fetch('{{ route("authentication.verify.otp") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ phone, otp })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if(data.verified){
+                    window.location.href = data.dashboard_url;
+                } else {
+                    errorDiv.textContent = data.error || "Login failed.";
+                }
+            });
+
+        } else {
+            fetch('{{ route("check.phone") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ phone })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if(data.exists){
+                    otpSection.classList.remove('d-none');
+                    submitBtn.textContent = 'Login'; 
+                    errorDiv.textContent = '';
+                } else {
+                    errorDiv.textContent = "Phone number not registered.";
+                }
+            });
+        }
+    });
+});
+</script>
 @endsection
